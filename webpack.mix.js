@@ -12,4 +12,37 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css');
+    .extract([
+        'lodash',
+        'popper.js',
+        'jquery',
+        'vue'
+    ])
+    .sass('resources/sass/app.scss', 'public/css')
+    .version();
+
+mix.webpackConfig(webpack => {
+    return {
+        plugins: [
+            new webpack.ProvidePlugin({
+                $: "jquery",
+                jQuery: "jquery",
+                'Popper': 'popper.js/dist/umd/popper'
+            }),
+            new webpack.DefinePlugin({
+                'process.env': {
+                    'NODE_ENV': JSON.stringify('production')
+                }
+            }),
+            // previous ignore plugin use array parameter, newer use regex not an array
+            new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+            new webpack.NoEmitOnErrorsPlugin(),
+            new webpack.optimize.UglifyJsPlugin(),
+            new webpack.optimize.AggressiveMergingPlugin(),
+            new webpack.optimize.CommonsChunkPlugin({
+                name: 'manifest',
+                chunks: ['vendor']
+            }),
+        ]
+    };
+});
