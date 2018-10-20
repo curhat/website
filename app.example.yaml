@@ -19,6 +19,9 @@ handlers:
     static_files: "public/svg/\\1"
     require_matching_file: false
     upload: 'public/svg/.*'
+  - url: '/favicon.ivo'
+    static_files:  "public/favicon.ico"
+    upload: 'public/favicon.ico'
   - url: '.*'
     script: auto
 
